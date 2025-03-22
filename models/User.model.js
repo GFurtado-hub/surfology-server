@@ -6,8 +6,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   lastName: {
-    type: String,
-    required: true,
+    type: String
   },
   email: {
     type: String,
@@ -21,20 +20,16 @@ const userSchema = new mongoose.Schema({
   },
   address: {
     street: {
-      type: String,
-      required: true
+      type: String
     },
     city: {
-      type: String,
-      required: true
+      type: String
     },
     country: {
-      type: String,
-      required: true
+      type: String
     },
     postalCode: {
-      type: String,
-      required: true
+      type: String
     }
   },
   orders: [{

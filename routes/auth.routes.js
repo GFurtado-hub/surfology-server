@@ -18,10 +18,10 @@ const saltRounds = 10;
 
 // POST /auth/signup  - Creates a new user in the database
 router.post("/signup", (req, res, next) => {
-  const { email, password, name } = req.body;
+  const { email, password, firstName } = req.body;
 
   // Check if email or password or name are provided as empty strings
-  if (email === "" || password === "" || name === "") {
+  if (email === "" || password === "" || firstName === "") {
     res.status(400).json({ message: "Provide email, password and name" });
     return;
   }
@@ -58,15 +58,15 @@ router.post("/signup", (req, res, next) => {
 
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
-      return User.create({ email, password: hashedPassword, name });
+      return User.create({ email, password: hashedPassword, firstName });
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
       // We should never expose passwords publicly
-      const { email, name, _id } = createdUser;
+      const { email, firstName, _id, role } = createdUser;
 
       // Create a new object that doesn't expose the password
-      const user = { email, name, _id };
+      const user = { email, firstName, _id, role };
 
       // Send a json response containing the user object
       res.status(201).json({ user: user });
@@ -80,8 +80,7 @@ router.post("/login", (req, res, next) => {
 
   // Check if email or password are provided as empty string
   if (email === "" || password === "") {
-    res.status(400).json({ message: "Provide email and password." });
-    return;
+    return res.status(400).json({ message: "Provide email and password." });
   }
 
   // Check the users collection if a user with the same email exists
@@ -89,8 +88,7 @@ router.post("/login", (req, res, next) => {
     .then((foundUser) => {
       if (!foundUser) {
         // If the user is not found, send an error response
-        res.status(401).json({ message: "User not found." });
-        return;
+        return res.status(401).json({ message: "User not found." });
       }
 
       // Compare the provided password with the one saved in the database
@@ -98,10 +96,13 @@ router.post("/login", (req, res, next) => {
 
       if (passwordCorrect) {
         // Deconstruct the user object to omit the password
-        const { _id, email, name } = foundUser;
+        const { _id, email, firstName, role } = foundUser;
 
-        // Create an object that will be set as the token payload
-        const payload = { _id, email, name };
+        // Log the payload to ensure it's correct
+        console.log("Login successful, payload:", { _id, email, firstName, role });
+
+        // Create the JWT payload
+        const payload = { _id, email, firstName, role };
 
         // Create a JSON Web Token and sign it
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
@@ -110,14 +111,17 @@ router.post("/login", (req, res, next) => {
         });
 
         // Send the token as the response
-        res.status(200).json({ authToken: authToken });
+        return res.status(200).json({ authToken });
       } else {
-        res.status(401).json({ message: "Unable to authenticate the user" });
+        // If password doesn't match
+        return res.status(401).json({ message: "Unable to authenticate the user" });
       }
     })
-    .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
+    .catch((err) => {
+      console.error("Error during login:", err);  // Log error for better debugging
+      next(err);  // Pass to error handler
+    });
 });
-
 // GET  /auth/verify  -  Used to verify JWT stored on the client
 router.get("/verify", isAuthenticated, (req, res, next) => {
   // If JWT token is valid the payload gets decoded by the
@@ -125,7 +129,7 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
   console.log(`req.payload`, req.payload);
 
   // Send back the token payload object containing the user data
-  res.status(200).json(req.payload);
+  res.status(200).json({message: "User is authenticated", user: req.payload});
 });
 
 module.exports = router;
