@@ -16,13 +16,18 @@ router.get("/surfoards", (req,res) => {
     .then((products) => {
         res.status(200).json(products);
     })
-    }
-)
+    .catch((error) => {
+        res.status(400).json(error);
+    })
+})
 
 router.get("/surfboards/:id",  (req,res) => {
     Product.findById(req.params.id)
     .then((product) => {
         res.status(200).json(product);
+    })
+    .catch((error) => {
+        res.status(400).json(error);
     })
 })
 
@@ -34,6 +39,9 @@ router.post("/surfboards",  isAdmin, (req,res) => {
     .then((product) => {
         res.status(201).json(product);
     })
+    .catch((error) => {
+        res.status(400).json(error);
+    })
 })
 
 router.put("/surfboards/:id", isAdmin, (req,res) => {
@@ -41,12 +49,18 @@ router.put("/surfboards/:id", isAdmin, (req,res) => {
     .then((product) => {
         res.status(200).json(product);
     })
+    .catch((error) => {
+        res.status(400).json(error);
+    })
 })
 
 router.delete("/surfboards/:id",  isAdmin, (req,res) => {
     Product.findByIdAndDelete(req.params.id)
     .then(() => {
         res.status(204).json();
+    })
+    .catch((error) => {
+        res.status(400).json(error);
     })
 })
 

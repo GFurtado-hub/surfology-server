@@ -17,12 +17,18 @@ router.post('/orders',  (req,res) => {
     .then((order) => {
         res.status(201).json(order);
     })
+    .catch((error) => {
+        res.status(400).json(error);
+    })
 })
 
 router.get('/orders/:userId' ,  (req,res) => {
     Order.find({userId: req.params.userId})
     .then((orders) => {
         res.status(200).json(orders);
+    })
+    .catch((error) => {
+        res.status(400).json(error);
     })
 })
 
@@ -34,12 +40,18 @@ router.get('/orders',  isAdmin, (req,res) => {
     .then((orders) => {
         res.status(200).json(orders);
     })
+    .catch((error) => {
+        res.status(400).json(error);
+    })
 })
 
 router.get('/orders/:id',    isAdmin, (req,res) => {
     Order.findById(req.params.id)
     .then((order) => {
         res.status(200).json(order);
+    })
+    .catch((error) => {
+        res.status(400).json(error);
     })
 })
 
@@ -48,6 +60,9 @@ router.get('/orders/:id',    isAdmin, (req,res) => {
     Order.find({userId: req.params.userId})
     .then((orders) => {
         res.status(200).json(orders);
+    })
+    .catch((error) => {
+        res.status(400).json(error);
     })
 })
 

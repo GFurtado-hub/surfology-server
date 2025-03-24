@@ -18,13 +18,18 @@ router.get('/users', isAdmin, (req,res) => {
     .then((users) => {
         res.status(200).json(users);
     })
+    .catch((error) => {
+        res.status(400).json(error);
+    })
 })
 
 router.get('users/:userId', isAdmin, (req,res) => {
     User.findById(req.params.userId)
     .then((user) => {
         res.status(200).json(user);
-
+    })
+    .catch((error) => {
+        res.status(400).json(error);
     })
 })
 
