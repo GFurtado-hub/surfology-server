@@ -11,7 +11,7 @@ const router = express.Router();
 const Product = require("../models/product.model");
 const { isAdmin } = require( '../middleware/admin.middleware');
 
-router.get("/surfoards", (req,res) => {
+router.get("/surfboards", (req,res) => {
     Product.find() 
     .then((products) => {
         res.status(200).json(products);
@@ -44,14 +44,14 @@ router.post("/surfboards",  isAdmin, (req,res) => {
     })
 })
 
-router.put("/surfboards/:id", isAdmin, (req,res) => {
-    Product.findByIdAndUpdate(req.params)
-    .then((product) => {
-        res.status(200).json(product);
-    })
-    .catch((error) => {
-        res.status(400).json(error);
-    })
+router.put("/surfboards/:id", isAdmin, (req, res) => {
+    Product.findByIdAndUpdate(req.params.id, req.body, { new: true }) 
+        .then((product) => {
+            res.status(200).json(product);
+        })
+        .catch((error) => {
+            res.status(400).json(error);
+        })
 })
 
 router.delete("/surfboards/:id",  isAdmin, (req,res) => {
