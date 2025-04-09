@@ -11,6 +11,8 @@ const express = require("express");
 const mongoose = require('mongoose');
 const app = express();
 
+
+
 const User = require('./models/User.model');
 const Product = require('./models/product.model');
 const Order = require('./models/order.model');
@@ -24,9 +26,10 @@ require("./config")(app);
 
 
 
+
 // 👇 Start handling routes here
 const productRoutes = require('./routes/product.routes');
-app.use('/api', isAuthenticated, productRoutes);
+app.use('/api', productRoutes);
 
 const orderRoutes = require('./routes/order.routes');
 app.use('/api', isAuthenticated, orderRoutes);
