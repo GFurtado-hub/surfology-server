@@ -8,6 +8,8 @@ const mongoose = require("mongoose");
 const MONGO_URI =
   process.env.MONGO_URI || "mongodb://127.0.0.1:27017/surfology";
 
+  console.log("🚀 MONGO_URI being used:", MONGO_URI); // 👈 Add this line
+
 mongoose
   .connect(MONGO_URI)
   .then((x) => {
