@@ -11,6 +11,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const FRONTEND_URL = process.env.ORIGIN || "https://surfology.netlify.app"; 
 // Middleware configuration
+
 module.exports = (app) => {
  
   app.set("trust proxy", 1);
